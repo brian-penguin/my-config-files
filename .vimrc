@@ -16,7 +16,7 @@ filetype plugin indent on
 nmap ; :
 
 colo tomorrow-night
-
+let g:airline_theme = 'tomorrow'
 let g:airline_powerline_fonts = 1
 
 let mapleader = "\<Space>"
@@ -32,8 +32,10 @@ let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
 " vim crosshairs
-hi CursorLine   cterm=NONE ctermbg=235
-hi CursorColumn cterm=NONE ctermbg=235
+"hi CursorLine   cterm=NONE ctermbg=235
+"hi CursorColumn cterm=NONE ctermbg=235
+hi CursorLine cterm=NONE ctermbg=black ctermfg=NONE guibg=black guifg=NONE
+hi Cursorcolmn cterm=NONE ctermbg=black ctermfg=NONE guibg=black guifg=NONE
 
 nnoremap <Leader>x :set cursorline! cursorcolumn!<CR>
 set nu
@@ -41,18 +43,34 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
+set nojoinspaces
 set tags=./tags;~/Projects
+
+" Don't jump to first character in line 
+set nostartofline
+" Show next 3 lines while scrolling
+if !&scrolloff
+  set scrolloff=3
+endif
+" Show next 5 columns while side-scrolling
+if !&sidescrolloff
+  set sidescrolloff=5
+endif
 
 " Trim whitespace on save in ruby
 autocmd BufWritePre *.rb :%s/\s\+$//e
 autocmd BufWritePre *.js :%s/\s\+$//e
+
+" Easy Json Formating
+" use ":FormatJson()
+com FormatJson %!python -m json.tool
 
 " ctrlp custom configurations
 " let g:ctrlp_max_files=100000
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:50'
 let g:ctrlp_working_path_mode = 'a'
 " project specific
-" let g:ctrlp_custom_ignore = 'node_modules/\|DS_Store/\|git/\|bower_components/\|vendor\|tmp\|db'
+let g:ctrlp_custom_ignore = 'node_modules/\|DS_Store/\|git/\|bower_components/\|vendor\|tmp\|db'
 
 " The Silver Searcher
 if executable('ag')

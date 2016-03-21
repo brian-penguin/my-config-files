@@ -75,8 +75,11 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-alias zshconfig="vim ~/.zshrc"
-alias v="vim"
+alias zshconfig="v ~/.zshrc"
+alias dandy="heroku run rails c -a dandelion-prod"
+#alias v="vim"
+alias v="nvim"
+alias c="clear"
 
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # For disabling ctrl-s as terminal freeze
