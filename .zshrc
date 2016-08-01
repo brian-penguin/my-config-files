@@ -5,7 +5,7 @@ export ZSH=/Users/brian/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="avit"
+ZSH_THEME="agnoster"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -75,8 +75,16 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-alias zshconfig="vim ~/.zshrc"
+alias zshconfig="v ~/.zshrc"
+alias dandy="heroku run rails c -a dandelion-prod"
 alias v="vim"
+#alias v="nvim"
+alias c="clear"
+alias bumpmem="sudo sysctl -w kern.sysv.shmall=65536 && sudo sysctl -w kern.sysv.shmmax=16777216"
+alias zs='zeus start'
+alias za='pry_mod.sh add; zs'
+alias zr='pry_mod.sh remove'
+alias bird='bundle install && rake db:migrate'
 
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # For disabling ctrl-s as terminal freeze
@@ -84,7 +92,7 @@ stty -ixon
 # for Docker
 # $(boot2docker shellinit 2> /dev/null)
 
-# This loads nvm
+# load NVM as a function
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
@@ -95,5 +103,10 @@ export PATH="$PATH:/usr/local/bin"
 export PATH="$PATH:/usr/local/sbin"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/Library/Python/2.7/bin"
+export PATH="$PATH:$HOME/code/salsify/potpourri/bin"
+export PATH="$PATH:$HOME/scripts"
+export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
+
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
