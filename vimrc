@@ -10,8 +10,17 @@ let g:airline_powerline_fonts = 1
 
 let mapleader = "\<Space>"
 
+" Move by visual line(ie wraps not literal lines)
+nnoremap j gj
+nnoremap k gk
+
 " Select a word in visial mode then double tap '/' for a search
 vnoremap // y/<C-R>"<CR>"
+
+" For when experiencing slow vim syntax highlighting with large ruby files
+set re=1
+set ttyfast
+set lazyredraw
 
 " vim nerdtree
 map <C-n> :NERDTreeToggle<CR>
@@ -27,9 +36,9 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " Turn on cursor highlighting by default
 set cursorline!
-"set cursorcolumn!
+set cursorcolumn!
 " Allow toggling of highlighter
-"nnoremap <Leader>x :set cursorline! cursorcolumn!<CR>
+nnoremap <Leader>x :set cursorline! cursorcolumn!<CR>
 nnoremap <Leader>x :set cursorline!<CR>
 
 set nu
@@ -46,7 +55,7 @@ set tags=./tags;~/Projects
 set splitbelow
 set splitright
 
-" Don't jump to first character in line 
+" Don't jump to first character in line
 "set nostartofline
 " Show next 3 lines while scrolling
 if !&scrolloff
@@ -57,16 +66,32 @@ if !&sidescrolloff
   set sidescrolloff=5
 endif
 
-" Trim whitespace on save in ruby
-autocmd BufWritePre *.rb :%s/\s\+$//e
-autocmd BufWritePre *.js :%s/\s\+$//e
+" Trim whitespace on save
+"autocmd BufWritePre *.rb :%s/\s\+$//e
+autocmd BufWritePre *.rb :StripWhitespace
+autocmd BufWritePre *.rake :StripWhitespace
+autocmd BufWritePre *.js :StripWhitespace
+autocmd BufWritePre *.txt :StripWhitespace
+autocmd BufWritePre *.md :StripWhitespace
+autocmd BufWritePre *.ex :StripWhitespace
+autocmd BufWritePre *.exs :StripWhitespace
+autocmd BufWritePre *.json :StripWhitespace
+autocmd BufWritePre *.go :StripWhitespace
+autocmd BufWritePre *.rc :StripWhitespace
+autocmd BufWritePre *.html* :StripWhitespace
+autocmd BufWritePre *.css :StripWhitespace
+autocmd BufWritePre *.sass :StripWhitespace
+autocmd BufWritePre *.scss :StripWhitespace
+autocmd BufWritePre *.sh :StripWhitespace
+autocmd BufWritePre *.py :StripWhitespace
+autocmd BufWritePre *.vim* :StripWhitespace
 
 " Easy Json Formating
 " use :FormatJson()
 com FormatJson %!python -m json.tool
 
 " AG ignore list
-" Just use a project level .agignore and keep any files you want in it 
+" Just use a project level .agignore and keep any files you want in it
 " All .agignore files are ignored by git globally
 
 " ctrlp custom configurations
@@ -107,10 +132,10 @@ let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
 
 " RSpec.vim with dispatch and zeus
-let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec {spec}"
-"
-" RSpec.vim with distpatch and fuck zeus 
-"let g:rspec_command = "Dispatch rspec {spec}"
+"let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec {spec}"
+
+" RSpec.vim with distpatch and fuck zeus
+let g:rspec_command = "Dispatch rspec {spec}"
 
 " RSpec.vim mappings
 map <Leader>t :call RunCurrentSpecFile()<CR>
@@ -129,10 +154,10 @@ nnoremap <Leader>ge :Gedit<CR>
 nnoremap <Leader>gr :Gread<CR>
 nnoremap <Leader>gw :Gwrite<CR><CR>
 nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <Leader>gp :Ggrep<Spaaaaaace>
-nnoremap <Leader>gm :Gmove<Spaaaaaace>
-nnoremap <Leader>gb :Git branch<Spaaaaaace>
-nnoremap <Leader>go :Git checkout<Spaaaaaace>
+nnoremap <Leader>gp :Ggrep<Space>
+nnoremap <Leader>gm :Gmove<Space>
+nnoremap <Leader>gb :Git branch<Space>
+nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gps :Dispatch! git push<CR>
 nnoremap <Leader>gpl :Dispatch! git pull<CR>
 
@@ -140,4 +165,21 @@ nnoremap <Leader>gpl :Dispatch! git pull<CR>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+
+" For trying out with faster escape in NeoVim
+if ! has('gui_running')
+  set ttimeoutlen=10
+  augroup FastEscape
+    autocmd!
+    au InsertEnter * set timeoutlen=0
+    au InsertLeave * set timeoutlen=1000
+  augroup END
+endif
+
+" Keep the gutter always open for lintsing
+let g:ale_sign_column_always = 1
+" Custome Ale status line config
+call airline#parts#define_function('ALE', 'ALEGetStatusLine')
+call airline#parts#define_condition('ALE', 'exists("*ALEGetStatusLine")')
+let g:airline_section_error = airline#section#create_right(['ALE'])
+let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']

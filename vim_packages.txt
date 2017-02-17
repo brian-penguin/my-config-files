@@ -1,7 +1,9 @@
 YouCompleteMe
+ale
+auto-pairs
 colorsbox
-command-t
 ctrlp.vim
+editorconfig-vim
 nerdcommenter
 nerdtree
 rust.vim
@@ -9,6 +11,7 @@ supertab
 ultisnips
 vim-airline
 vim-airline-themes
+vim-better-whitespace
 vim-bracketed-paste
 vim-colors-solarized
 vim-crosshairs
@@ -18,5 +21,7 @@ vim-elixir
 vim-endwise
 vim-fugitive
 vim-javascript
+vim-numbertoggle
+vim-polyglot
 vim-rspec
 vim-sensible
