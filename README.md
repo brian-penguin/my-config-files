@@ -1,6 +1,8 @@
 # my-config-files
 
-See vim_packages.txt for current vim packages used 
-All setup currently configured for a MACPRO El Capitain
+This is my Setup Currently for my new Manjaro Laptop
 
-Using Pathogen vim for vim package updates 
+- You need to install Vim-Plug to install vim packages (this will require vim 8 or later)
+- Also requires oh-my-zsh
+
+
