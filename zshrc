@@ -45,7 +45,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ruby rails atom zsh-syntax-highlighting)
+plugins=(git ruby rails zsh-syntax-highlighting)
 
 # User configuration
 
@@ -68,7 +68,7 @@ source $ZSH/oh-my-zsh.sh
 export PGHOST='localhost'
 
 # Use VI mode in zsh
-#bindkey -v
+bindkey -v
 
 bindkey '^P' up-history
 bindkey '^N' down-history
@@ -89,19 +89,21 @@ export SSH_KEY_PATH="~/.ssh/dsa_id"
 # For a full list of active aliases, run `alias`.
 
 alias ko="kickoff.sh"
-alias zshconfig="v ~/.zshrc"
+alias zshrc="v ~/.zshrc"
+alias vimrc="v ~/.vimrc"
 alias dandy="heroku run rails c -a dandelion-prod"
 alias sdandy="heroku run rails c -a dandelion-staging"
+alias zeus="heroku run rails c -a zeus-production"
+alias szeus="heroku run rails c -a bootstrapping-staging"
 alias v="vim"
 #alias v="nvim"
 alias c="clear"
 alias bumpmem="sudo sysctl -w kern.sysv.shmall=65536 && sudo sysctl -w kern.sysv.shmmax=16777216"
-alias zs='zeus start'
 alias pa='pry_mod.sh add;'
 alias pr='pry_mod.sh remove;'
-alias za='pry_mod.sh add; zs'
-alias zr='pry_mod.sh remove;'
-alias bird='bundle install && rake db:migrate'
+alias be='bundle exec'
+alias bird='bundle install && rake db:migrate && rake db:test:prepare'
+alias gcod='gco db/structure.sql'
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
 # For disabling ctrl-s as terminal freeze
@@ -123,10 +125,10 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/Library/Python/2.7/bin"
 export PATH="$PATH:$HOME/code/salsify/potpourri/bin"
 export PATH="$PATH:$HOME/scripts"
-export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/9.5/bin"
+export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/9.6/bin"
 
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-# make the key timout 0.1s instead of 0.4s 
+# make the key timout 0.1s instead of 0.4s
 export KEYTIMEOUT=1

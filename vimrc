@@ -4,8 +4,12 @@ filetype plugin indent on
 
 nmap ; :
 
-colo tomorrow-night
-let g:airline_theme = 'tomorrow'
+colo gruvbox
+"colo tomorrow-night
+"colo nord
+"let g:airline_theme = 'tomorrow'
+"let g:airline_theme = 'nord'
+let g:airline_theme = 'gruvbox'
 let g:airline_powerline_fonts = 1
 
 let mapleader = "\<Space>"
@@ -22,24 +26,16 @@ set re=1
 set ttyfast
 set lazyredraw
 
-" vim nerdtree
-map <C-n> :NERDTreeToggle<CR>
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-let g:NERDTreeDirArrows = 1
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-
-" vim crosshairs
-" Uncomment for a red and black hightlighting
-"hi CursorLine cterm=NONE ctermbg=darkred ctermfg=NONE guibg=black guifg=NONE
-"hi CursorColumn cterm=NONE ctermbg=black ctermfg=NONE guibg=black guifg=NONE
-
 " Turn on cursor highlighting by default
 set cursorline!
 set cursorcolumn!
 " Allow toggling of highlighter
 nnoremap <Leader>x :set cursorline! cursorcolumn!<CR>
 nnoremap <Leader>x :set cursorline!<CR>
+
+" Don't fold code by default and don't fold all of then with za
+set nofoldenable
+set foldlevelstart=99
 
 set nu
 set tabstop=2
@@ -59,12 +55,18 @@ set splitright
 "set nostartofline
 " Show next 3 lines while scrolling
 if !&scrolloff
-  set scrolloff=5
+  set scrolloff=10
 endif
 " Show next 5 columns while side-scrolling
 if !&sidescrolloff
   set sidescrolloff=5
 endif
+
+" Using BufExplorer
+" Buffers - explore/next/previous: Alt-F12, F12, Shift-F12.
+nnoremap <silent> <M-F12> :BufExplorer<CR>
+nnoremap <silent> <F12> :bn<CR>
+nnoremap <silent> <S-F12> :bp<CR>
 
 " Trim whitespace on save
 "autocmd BufWritePre *.rb :%s/\s\+$//e
@@ -100,6 +102,14 @@ let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:50'
 let g:ctrlp_working_path_mode = 'a'
 " project specific
 let g:ctrlp_custom_ignore = 'node_modules/\|DS_Store/\|git/\|bower_components/\|vendor\|tmp\|db'
+let g:ctrlp_user_command = {
+      \ 'types': {
+      \ 1: ['.git', 'cd %s && git ls-files'],
+      \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+      \ },
+      \ 'fallback': 'find %s -type f'
+      \ }
+
 
 " The Silver Searcher
 if executable('ag')
@@ -107,7 +117,7 @@ if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g "" --ignore node_modules --ignore DS_Store --ignore git --ignore bower_components --ignore vendor --ignore tmp --ignore db --ignore app/resources'
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g "" --ignore node_modules --ignore bundle --ignore DS_Store --ignore git --ignore bower_components --ignore vendor --ignore tmp --ignore db --ignore app/resources'
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
@@ -120,16 +130,16 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
 
-" make You Complete Me compatible with Utilisnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-j>']
-let g:ycm_key_list_previous_completion = ['<C-k>']
-let g:SuperTabDefaultCompletionType = '<C-j>'
-
 " utilisnips directory
 let g:UltiSnipsSnippetDirectories=['UltiSnips']
 let g:UltiSnipsExpandTrigger='<tab>'
 let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
+
+" make You Complete Me compatible with Utilisnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-j>']
+let g:ycm_key_list_previous_completion = ['<C-k>']
+let g:SuperTabDefaultCompletionType = '<C-j>'
 
 " RSpec.vim with dispatch and zeus
 "let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec {spec}"
@@ -166,17 +176,10 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" For trying out with faster escape in NeoVim
-if ! has('gui_running')
-  set ttimeoutlen=10
-  augroup FastEscape
-    autocmd!
-    au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=1000
-  augroup END
-endif
+" Only lint on file save(for big files)
+"let g:ale_lint_on_text_changed = 'never'
 
-" Keep the gutter always open for lintsing
+" Keep the gutter always open for linting
 let g:ale_sign_column_always = 1
 " Custome Ale status line config
 call airline#parts#define_function('ALE', 'ALEGetStatusLine')
