@@ -5,7 +5,12 @@ export ZSH=/Users/brian/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster"
+#ZSH_THEME="agnoster"
+ZSH_THEME="Spaceship"
+SPACESHIP_BATTERY_ALWAYS_SHOW=false
+#SPACESHIP_PROMPT_SYMBOL="➤"
+SPACESHIP_PROMPT_SYMBOL="✚"
+SPACESHIP_PROMPT_ADD_NEWLINE=false
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -59,16 +64,21 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='vim'
+   export EDITOR='nvim'
  else
-   export EDITOR='vim'
+   # export EDITOR='vim'
+   export EDITOR='nvim'
  fi
 
 # Use localhost for all postgres on this machine
 export PGHOST='localhost'
 
+# For Rusty-tags
+# Rust based extensions for ctags
+export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src/
+
 # Use VI mode in zsh
-bindkey -v
+# bindkey -v
 
 bindkey '^P' up-history
 bindkey '^N' down-history
@@ -87,7 +97,7 @@ export SSH_KEY_PATH="~/.ssh/dsa_id"
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-
+alias ta="tmux attach"
 alias ko="kickoff.sh"
 alias zshrc="v ~/.zshrc"
 alias vimrc="v ~/.vimrc"
@@ -95,22 +105,22 @@ alias dandy="heroku run rails c -a dandelion-prod"
 alias sdandy="heroku run rails c -a dandelion-staging"
 alias zeus="heroku run rails c -a zeus-production"
 alias szeus="heroku run rails c -a bootstrapping-staging"
-alias v="vim"
-#alias v="nvim"
+alias senv="source .env"
+#alias v="vim"
+alias v="nvim"
 alias c="clear"
 alias bumpmem="sudo sysctl -w kern.sysv.shmall=65536 && sudo sysctl -w kern.sysv.shmmax=16777216"
 alias pa='pry_mod.sh add;'
 alias pr='pry_mod.sh remove;'
 alias be='bundle exec'
-alias bird='bundle install && rake db:migrate && rake db:test:prepare'
-alias gcod='gco db/structure.sql'
+alias bird='bundle install; rake db:migrate_all && rake db:test:prepare'
+alias gcod='gco db*'
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
+alias sk8="salsifyk8s"
+alias clean="git clean -xi"
 
 # For disabling ctrl-s as terminal freeze
 stty -ixon
-#
-# for Docker
-#eval "$(docker-machine env default)"
 
 # load NVM as a function
 export NVM_DIR="$HOME/.nvm"
@@ -119,16 +129,28 @@ export NVM_DIR="$HOME/.nvm"
 # For Z indexing
 . `brew --prefix`/etc/profile.d/z.sh
 
+export GOPATH="$HOME/go"
+
 export PATH="$PATH:/usr/local/bin"
 export PATH="$PATH:/usr/local/sbin"
+# export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/Library/Python/2.7/bin"
 export PATH="$PATH:$HOME/code/salsify/potpourri/bin"
+export PATH="$PATH:$HOME/opt/kafka/bin"
 export PATH="$PATH:$HOME/scripts"
 export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/9.6/bin"
+export PATH="$PATH:/usr/local/opt/icu4c/bin"
+export PATH="$PATH:/usr/local/opt/icu4c/sbin"
 
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 # make the key timout 0.1s instead of 0.4s
 export KEYTIMEOUT=1
+
+export PATH="$HOME/.yarn/bin:$PATH"
+
+source "/Users/brian/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"
