@@ -50,7 +50,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ruby rails zsh-syntax-highlighting)
+plugins=(git ruby zsh-syntax-highlighting)
 
 # User configuration
 
@@ -77,8 +77,17 @@ export PGHOST='localhost'
 # Rust based extensions for ctags
 export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src/
 
+# For FZF use RG (RipGrep is faster)
+# Some optional adds See: https://github.com/BurntSushi/ripgrep
+# --files: List files that would be searched but do not search
+# --no-ignore: Do not respect .gitignore, etc...
+# --hidden: Search hidden files and folders
+# --follow: Follow symlinks
+# --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git/*"'
+
 # Use VI mode in zsh
-# bindkey -v
+bindkey -v
 
 bindkey '^P' up-history
 bindkey '^N' down-history
@@ -101,30 +110,35 @@ alias ta="tmux attach"
 alias ko="kickoff.sh"
 alias zshrc="v ~/.zshrc"
 alias vimrc="v ~/.vimrc"
-alias dandy="heroku run rails c -a dandelion-prod"
-alias sdandy="heroku run rails c -a dandelion-staging"
+alias sk8="salsifyk8s"
+alias dandy="salsifyk8s run cmd -e prod -a dandelion rails c"
+alias sdandy="salsifyk8s run cmd -e staging -a dandelion rails c"
 alias zeus="heroku run rails c -a zeus-production"
 alias szeus="heroku run rails c -a bootstrapping-staging"
 alias senv="source .env"
 #alias v="vim"
 alias v="nvim"
 alias c="clear"
-alias bumpmem="sudo sysctl -w kern.sysv.shmall=65536 && sudo sysctl -w kern.sysv.shmmax=16777216"
 alias pa='pry_mod.sh add;'
 alias pr='pry_mod.sh remove;'
 alias be='bundle exec'
 alias bird='bundle install; rake db:migrate_all && rake db:test:prepare'
 alias gcod='gco db*'
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
-alias sk8="salsifyk8s"
 alias clean="git clean -xi"
+alias lnvm='[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
+alias lrvm='[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"'
+alias sra="spring rspec"
+alias cat="bat"
+
+# fh - repeat history
+fh() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
 
 # For disabling ctrl-s as terminal freeze
 stty -ixon
 
-# load NVM as a function
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # For Z indexing
 . `brew --prefix`/etc/profile.d/z.sh
@@ -136,7 +150,9 @@ export PATH="$PATH:/usr/local/sbin"
 # export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="$PATH:$HOME/Library/Python/2.7/bin"
+export NVM_DIR="$HOME/.nvm" # Add NVM_DIR for using nvm
+
+#export PATH="$PATH:$HOME/Library/Python/2.7/bin"
 export PATH="$PATH:$HOME/code/salsify/potpourri/bin"
 export PATH="$PATH:$HOME/opt/kafka/bin"
 export PATH="$PATH:$HOME/scripts"
@@ -145,7 +161,8 @@ export PATH="$PATH:/usr/local/opt/icu4c/bin"
 export PATH="$PATH:/usr/local/opt/icu4c/sbin"
 
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # load NVM as a function
 
 # make the key timout 0.1s instead of 0.4s
 export KEYTIMEOUT=1
@@ -154,3 +171,5 @@ export PATH="$HOME/.yarn/bin:$PATH"
 
 source "/Users/brian/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
 export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
