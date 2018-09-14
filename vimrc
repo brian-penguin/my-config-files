@@ -14,6 +14,17 @@ Plug 'w0rp/ale'
 
 " Vim Language Pack
 Plug 'sheerun/vim-polyglot'
+" Language server
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
+" (Optional) Multi-entry selection UI.
+" This will link the brew sym-linked fzf used in commandline
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+
 " Autocomplete
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 
@@ -22,6 +33,10 @@ Plug 'ervandew/supertab'
 
 " Nice defaults to get started
 Plug 'tpope/vim-sensible'
+" Use Tmux and Vim seemlessly see:
+" https://robots.thoughtbot.com/seamlessly-navigate-vim-and-tmux-splits
+Plug 'christoomey/vim-tmux-navigator'
+
 " Pair open quotes and brackets etc
 Plug 'jiangmiao/auto-pairs'
 " Use editorconfig file for formatting when available
@@ -30,8 +45,11 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-airline/vim-airline'
 " Best commentor
 Plug 'scrooloose/nerdcommenter'
+
+" CLEANUP
 " Used with Git ls to fuzzy find files
-Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'ctrlpvim/ctrlp.vim'
+
 " line highlighting (Look into just doing this myself)
 Plug 'bronson/vim-crosshairs'
 " Paste without escape chars
@@ -74,6 +92,7 @@ Plug 'mhinz/vim-mix-format'
 
 " Colorschemes
 Plug 'rakr/vim-one'
+Plug 'dracula/vim'
 " Plug 'morhetz/gruvbox'
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'reedes/vim-colors-pencil'
@@ -110,11 +129,9 @@ set background=light
 colo one
 let g:airline_theme = 'one'
 
-" Pencil Color Theme Settings (good for outside)
-"set background=light
-"colo pencil
-"let g:pencil_higher_contrast_ui = 0
-"let g:airline_theme = 'pencil'
+"set background=dark
+"colo dracula
+"let g:airline_theme = 'dracula'
 
 let g:airline_powerline_fonts = 1
 
@@ -132,6 +149,27 @@ if !exists('g:deoplete#omni#input_patterns')
     let g:deoplete#omni#input_patterns = {}
   endif
 
+"FZF config
+" Customize fzf colors to match your color scheme
+" Use Ctrl-p for fzf now
+nnoremap <silent> <C-p> :FZF<CR>
+
+" Match colors env
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 " Plugin key-mappings.
 " <CR>: close popup and save indent.
 inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
@@ -140,19 +178,6 @@ function! s:my_cr_function()
   " For no inserting <CR> key.
   "return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
-
-" NOT USED (NEOCOMPLETE)
-"inoremap <expr><C-g>     neocomplete#undo_completion()
-"inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-" <TAB>: completion.
-"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-"inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-"inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-"
-" Set minimum syntax keyword length.
-"let g:neocomplete#sources#syntax#min_keyword_length = 3
 
 "Elixir stuff
 let g:mix_format_on_save = 1
@@ -169,6 +194,10 @@ inoremap <Left> <nop>
 inoremap <Right> <nop>
 noremap Q <nop>
 
+" Auto resize panes when host is re-drawn see:
+" https://vi.stackexchange.com/questions/201/make-panes-resize-when-host-window-is-resized
+autocmd VimResized * wincmd =
+
 " Move by visual line(ie wraps not literal lines)
 nnoremap j gj
 nnoremap k gk
@@ -180,6 +209,9 @@ vnoremap // y/<C-R>"<CR>"
 set re=1
 set ttyfast
 set lazyredraw
+
+" Set the title bar
+set title
 
 " Turn on cursor highlighting by default
 set cursorline!
@@ -225,57 +257,39 @@ nnoremap <silent> <S-F12> :bp<CR>
 
 " Trim whitespace on save
 "autocmd BufWritePre *.rb :%s/\s\+$//e
-autocmd BufWritePre *.clj :StripWhitespace
-autocmd BufWritePre *.rb :StripWhitespace
-autocmd BufWritePre *.rs :StripWhitespace
-autocmd BufWritePre *.rake :StripWhitespace
-autocmd BufWritePre *.js :StripWhitespace
-autocmd BufWritePre *.txt :StripWhitespace
-autocmd BufWritePre *.md :StripWhitespace
-autocmd BufWritePre *.ex :StripWhitespace
-autocmd BufWritePre *.exs :StripWhitespace
-autocmd BufWritePre *.json :StripWhitespace
-autocmd BufWritePre *.go :StripWhitespace
-autocmd BufWritePre *.rc :StripWhitespace
-autocmd BufWritePre *.html* :StripWhitespace
-autocmd BufWritePre *.css :StripWhitespace
-autocmd BufWritePre *.sass :StripWhitespace
-autocmd BufWritePre *.scss :StripWhitespace
-autocmd BufWritePre *.sh :StripWhitespace
-autocmd BufWritePre *.py :StripWhitespace
-autocmd BufWritePre *.vim* :StripWhitespace
+"autocmd BufWritePre *.clj :StripWhitespace
+"autocmd BufWritePre *.rb :StripWhitespace
+"autocmd BufWritePre *.rs :StripWhitespace
+"autocmd BufWritePre *.rake :StripWhitespace
+"autocmd BufWritePre *.js :StripWhitespace
+"autocmd BufWritePre *.txt :StripWhitespace
+"autocmd BufWritePre *.md :StripWhitespace
+"autocmd BufWritePre *.ex :StripWhitespace
+"autocmd BufWritePre *.exs :StripWhitespace
+"autocmd BufWritePre *.json :StripWhitespace
+"autocmd BufWritePre *.go :StripWhitespace
+"autocmd BufWritePre *.rc :StripWhitespace
+"autocmd BufWritePre *.html* :StripWhitespace
+"autocmd BufWritePre *.css :StripWhitespace
+"autocmd BufWritePre *.sass :StripWhitespace
+"autocmd BufWritePre *.scss :StripWhitespace
+"autocmd BufWritePre *.sh :StripWhitespace
+"autocmd BufWritePre *.py :StripWhitespace
+"autocmd BufWritePre *.vim* :StripWhitespace
 
 " Easy Json Formating
 " use :FormatJson()
 com FormatJson %!python -m json.tool
 
-" AG ignore list
-" Just use a project level .agignore and keep any files you want in it
-" All .agignore files are ignored by git globally
-
-" ctrlp custom configurations
-" let g:ctrlp_max_files=100000
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:50'
-let g:ctrlp_working_path_mode = 'a'
-let g:ctrlp_custom_ignore = {
-      \ 'dir':  '\v[\/](doc|tmp|node_modules|git|bower_components|vendor|tmp|db|deps)',
-      \ 'file': '\v\.(exe|so|dll|DS_Store|tags)$',
-      \ }
-let g:ctrlp_user_command = {
-      \ 'types': {
-      \ 1: ['.git', 'cd %s && git ls-files'],
-      \ 2: ['.hg', 'hg --cwd %s locate -I .'],
-      \ },
-      \ 'fallback': 'find %s -type f'
-      \ }
 
 " The Silver Searcher
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
 
+  " CLEANUP
   " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+  "let g:ctrlp_use_caching = 0
 endif
 
 " bind K to grep word under cursor
@@ -291,11 +305,6 @@ let g:UltiSnipsSnippetDirectories=['UltiSnips']
 let g:UltiSnipsExpandTrigger='<tab>'
 let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
-
-" make You Complete Me compatible with Utilisnips (using supertab)
-"let g:ycm_key_list_select_completion = ['<C-j>']
-"let g:ycm_key_list_previous_completion = ['<C-k>']
-"let g:SuperTabDefaultCompletionType = '<C-j>'
 
 " RSpec.vim with distpatch
 let g:rspec_command = 'Dispatch rspec {spec}'
@@ -349,3 +358,33 @@ let g:deoplete#sources#ternjs#filetypes = [
                 \ 'ts',
                 \ 'tsx',
                 \ ]
+
+" Autofix JS fixable errors
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['eslint'],
+\}
+let g:ale_fix_on_save = 1
+
+" Rust specific
+" May be the same as ale_fix_on_save
+let g:autofmt_autosave = 1
+
+" a basic set up for LanguageClient-Neovim
+" << LSP >> {{{
+
+let g:LanguageClient_autoStart = 0
+nnoremap <leader>lcs :LanguageClientStart<CR>
+
+" if you want it to turn on automatically
+" let g:LanguageClient_autoStart = 1
+
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'] }
+
+noremap <silent> H :call LanguageClient_textDocument_hover()<CR>
+noremap <silent> Z :call LanguageClient_textDocument_definition()<CR>
+noremap <silent> R :call LanguageClient_textDocument_rename()<CR>
+noremap <silent> S :call LanugageClient_textDocument_documentSymbol()<CR>
+" }}}
