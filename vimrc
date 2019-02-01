@@ -46,10 +46,6 @@ Plug 'vim-airline/vim-airline'
 " Best commentor
 Plug 'scrooloose/nerdcommenter'
 
-" CLEANUP
-" Used with Git ls to fuzzy find files
-"Plug 'ctrlpvim/ctrlp.vim'
-
 " line highlighting (Look into just doing this myself)
 Plug 'bronson/vim-crosshairs'
 " Paste without escape chars
@@ -62,6 +58,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'thoughtbot/vim-rspec'
 " Send them to the background
 Plug 'tpope/vim-dispatch'
+Plug 'radenling/vim-dispatch-neovim'
 " Change the surrounding brackets and quotes
 Plug 'tpope/vim-surround'
 " Git for vim!
@@ -76,8 +73,8 @@ Plug 'jlanzarotta/bufexplorer'
 Plug 'Yggdroot/indentLine'
 
 " Org Mode
-Plug 'jceb/vim-orgmode'
-Plug 'tpope/vim-speeddating'
+"Plug 'jceb/vim-orgmode'
+"Plug 'tpope/vim-speeddating'
 
 " RUST
 Plug 'sebastianmarkow/deoplete-rust'
@@ -90,7 +87,14 @@ Plug 'carlitux/deoplete-ternjs'
 Plug 'slashmili/alchemist.vim'
 Plug 'mhinz/vim-mix-format'
 
-" Colorschemes
+" Scala
+Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins' }
+
+"Clojure
+Plug 'tpope/vim-fireplace'
+Plug 'venantius/vim-cljfmt'
+
+"Colorschemes
 Plug 'rakr/vim-one'
 Plug 'dracula/vim'
 " Plug 'morhetz/gruvbox'
@@ -215,10 +219,9 @@ set title
 
 " Turn on cursor highlighting by default
 set cursorline!
-"set cursorcolumn!
+set cursorcolumn!
 " Allow toggling of highlighter
 nnoremap <Leader>x :set cursorline! <CR>
-"nnoremap <Leader>x :set cursorline!<CR>
 
 " Don't fold code by default and don't fold all of then with za
 set nofoldenable
@@ -255,41 +258,14 @@ nnoremap <silent> <M-F12> :BufExplorer<CR>
 nnoremap <silent> <F12> :bn<CR>
 nnoremap <silent> <S-F12> :bp<CR>
 
-" Trim whitespace on save
-"autocmd BufWritePre *.rb :%s/\s\+$//e
-"autocmd BufWritePre *.clj :StripWhitespace
-"autocmd BufWritePre *.rb :StripWhitespace
-"autocmd BufWritePre *.rs :StripWhitespace
-"autocmd BufWritePre *.rake :StripWhitespace
-"autocmd BufWritePre *.js :StripWhitespace
-"autocmd BufWritePre *.txt :StripWhitespace
-"autocmd BufWritePre *.md :StripWhitespace
-"autocmd BufWritePre *.ex :StripWhitespace
-"autocmd BufWritePre *.exs :StripWhitespace
-"autocmd BufWritePre *.json :StripWhitespace
-"autocmd BufWritePre *.go :StripWhitespace
-"autocmd BufWritePre *.rc :StripWhitespace
-"autocmd BufWritePre *.html* :StripWhitespace
-"autocmd BufWritePre *.css :StripWhitespace
-"autocmd BufWritePre *.sass :StripWhitespace
-"autocmd BufWritePre *.scss :StripWhitespace
-"autocmd BufWritePre *.sh :StripWhitespace
-"autocmd BufWritePre *.py :StripWhitespace
-"autocmd BufWritePre *.vim* :StripWhitespace
-
 " Easy Json Formating
 " use :FormatJson()
 com FormatJson %!python -m json.tool
-
 
 " The Silver Searcher
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
-
-  " CLEANUP
-  " ag is fast enough that CtrlP doesn't need to cache
-  "let g:ctrlp_use_caching = 0
 endif
 
 " bind K to grep word under cursor
@@ -307,7 +283,7 @@ let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
 
 " RSpec.vim with distpatch
-let g:rspec_command = 'Dispatch rspec {spec}'
+let g:rspec_command = 'Dispatch bin/rspec {spec}'
 
 " RSpec.vim mappings
 map <Leader>t :call RunCurrentSpecFile()<CR>
@@ -343,8 +319,9 @@ highlight Comment cterm=italic
 
 " enable extensions for airline
 let g:airline#extensions#ale#enabled = 1
-" Only lint on file save(for big files)
-let g:ale_lint_on_text_changed = 'never'
+" Uncomment when you only lint on file save(for big files)
+" let g:ale_lint_on_text_changed = 'never'
+
 " Keep the gutter always open for linting
 let g:ale_sign_column_always = 1
 " Custome Ale status line config
@@ -359,9 +336,14 @@ let g:deoplete#sources#ternjs#filetypes = [
                 \ 'tsx',
                 \ ]
 
-" Autofix JS fixable errors
+
+" Only use standardrb for liinting
+let g:ale_linters = { 'ruby': ['standardrb'] }
+"
+" Autofix fixable errors
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'ruby': ['standardrb'],
 \   'javascript': ['eslint'],
 \}
 let g:ale_fix_on_save = 1
