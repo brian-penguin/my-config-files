@@ -54,9 +54,7 @@ Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'ntpeters/vim-better-whitespace'
 " Jumping around in a fun and fast way
 Plug 'easymotion/vim-easymotion'
-" Run Specs from Vim
-Plug 'thoughtbot/vim-rspec'
-" Send them to the background
+" Send commands to shell in the background
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
 " Change the surrounding brackets and quotes
@@ -72,31 +70,32 @@ Plug 'jlanzarotta/bufexplorer'
 " Autoindent lines please
 Plug 'Yggdroot/indentLine'
 
-" Org Mode
-"Plug 'jceb/vim-orgmode'
-"Plug 'tpope/vim-speeddating'
+" RUBY
+" Run Specs from Vim
+Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
 
 " RUST
-Plug 'sebastianmarkow/deoplete-rust'
-Plug 'racer-rust/vim-racer'
+Plug 'sebastianmarkow/deoplete-rust', { 'for': 'rust' }
+Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 
 " JS
-Plug 'carlitux/deoplete-ternjs'
+Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'typescript'] }
 
 " Elixir
-Plug 'slashmili/alchemist.vim'
-Plug 'mhinz/vim-mix-format'
+Plug 'slashmili/alchemist.vim', { 'for': 'elixir' }
+Plug 'mhinz/vim-mix-format', { 'for': 'elixir' }
 
 " Scala
-Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins' }
+Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins', 'for': 'scala' }
 
 "Clojure
-Plug 'tpope/vim-fireplace'
-Plug 'venantius/vim-cljfmt'
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
 
 "Colorschemes
 Plug 'rakr/vim-one'
-Plug 'dracula/vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'morhetz/gruvbox'
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'reedes/vim-colors-pencil'
@@ -107,7 +106,10 @@ call plug#end()
 " so autobuild stuff doesn't register the swp file
 set directory^=$HOME/.vim/tmp//
 
+""""""""""""""""""""""
 " Macvim
+" """"""""""""""""""""
+
 " hide mouse while typing
 set mousehide
 " gui font
@@ -116,6 +118,10 @@ set guifont=Hack:h13
 " bye scrollbars
 set guioptions-=r
 set guioptions-=L
+
+""""""""""""""
+" Theme
+""""""""""""""
 
 "Gruvbox Theme settings
 "set background=dark
@@ -139,55 +145,16 @@ let g:airline_theme = 'one'
 
 let g:airline_powerline_fonts = 1
 
+
+""""""""""""""""
+" Defaults "
+"""""""""""""""
 let mapleader = "\<Space>"
 
 " Line Formatting for indented spaces
 let g:indentLine_enabled = 0
 
-" DEOCOMPLETE (Neocomplete replacement)
-let g:deoplete#enable_at_startup = 1
-" deoplete tab-complete
-let g:SuperTabDefaultCompletionType = "<c-n>"
-" Setup for omnicompletion
-if !exists('g:deoplete#omni#input_patterns')
-    let g:deoplete#omni#input_patterns = {}
-  endif
-
-"FZF config
-" Customize fzf colors to match your color scheme
-" Use Ctrl-p for fzf now
-nnoremap <silent> <C-p> :FZF<CR>
-
-" Match colors env
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
-" Plugin key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-
-"Elixir stuff
-let g:mix_format_on_save = 1
-let g:mix_format_silent_errors = 1
-
-" Diable arrow keys
+" Disable arrow keys
 noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
@@ -235,7 +202,7 @@ set expandtab
 set nojoinspaces
 set hlsearch
 set autoread
-set tags=./tags;~/Projects
+set tags=./tags;~/Projects;tags
 
 " Below is for more natural window splits
 set splitbelow
@@ -252,7 +219,78 @@ if !&sidescrolloff
   set sidescrolloff=5
 endif
 
-" Using BufExplorer
+" Easier window split navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+
+" italic comments! https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
+highlight Comment cterm=italic
+
+""""""""""""""""""""""""
+"" DEOCOMPLETE (Neocomplete replacement)
+""""""""""""""""""""""""
+let g:deoplete#enable_at_startup = 1
+" deoplete tab-complete
+let g:SuperTabDefaultCompletionType = "<c-n>"
+" Setup for omnicompletion
+if !exists('g:deoplete#omni#input_patterns')
+    let g:deoplete#omni#input_patterns = {}
+  endif
+
+""""""""""""""""""""""""""""""""""
+"FZF config
+" """"""""""""""""""""""""""""""""""""
+" Customize fzf colors to match your color scheme
+" Use Ctrl-p for fzf now
+nnoremap <silent> <C-p> :FZF<CR>
+
+" Match colors env
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" Plugin key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+"
+" make fzf status line use the vim theme colors
+function! s:fzf_statusline()
+  highlight fzf1 ctermfg=161 ctermbg=251
+  highlight fzf2 ctermfg=23 ctermbg=251
+  highlight fzf3 ctermfg=237 ctermbg=251
+  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+endfunction
+
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+
+""""""""""""""""""""
+"Elixir stuff
+""""""""""""""""""""""
+let g:mix_format_on_save = 1
+let g:mix_format_silent_errors = 1
+
+
+" """"""""""""""""
+" BufExplorer
+" """"""""""""""""""""""""
 " Buffers - explore/next/previous: Alt-F12, F12, Shift-F12.
 nnoremap <silent> <M-F12> :BufExplorer<CR>
 nnoremap <silent> <F12> :bn<CR>
@@ -262,7 +300,9 @@ nnoremap <silent> <S-F12> :bp<CR>
 " use :FormatJson()
 com FormatJson %!python -m json.tool
 
+" """""""""""j"""""""""""
 " The Silver Searcher
+" """"""""""""""""""""""""
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
@@ -276,12 +316,17 @@ command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " TODO: This isn't great, we should just use the defined args above
 nnoremap \ :Ag<SPACE>
 
+" """"""""""""""""""""""""""""""""
 " utilisnips directory
+""""""""""""""""""""""""""""""""""""
 let g:UltiSnipsSnippetDirectories=['UltiSnips']
 let g:UltiSnipsExpandTrigger='<tab>'
 let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
 
+" """"""""""""""""""""
+" RSPEC Config
+" """"""""""""""""""""""
 " RSpec.vim with distpatch
 let g:rspec_command = 'Dispatch bin/rspec {spec}'
 
@@ -292,7 +337,9 @@ map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
 let g:rspec_runner = "os_x_iterm2"
 
-" fugitive git bindings
+" """"""""""""""""""""""""
+" fugitive git
+""""""""""""""""""""""""
 nnoremap <Leader>ga :Git add %:p<CR><CR>
 nnoremap <Leader>gs :Gstatus<CR>
 nnoremap <Leader>gc :Gcommit -v -q<CR>
@@ -309,14 +356,10 @@ nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gps :Dispatch! git push<CR>
 nnoremap <Leader>gpl :Dispatch! git pull<CR>
 
-" Easier window split navigation
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
 
-" italic comments! https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
-highlight Comment cterm=italic
-
+" """"""""""""""""""""""""""""
+" ALE
+" """"""""""""""""""""""""""""""
 " enable extensions for airline
 let g:airline#extensions#ale#enabled = 1
 " Uncomment when you only lint on file save(for big files)
@@ -327,17 +370,7 @@ let g:ale_sign_column_always = 1
 " Custome Ale status line config
 let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
 
-" TERN config
-let g:deoplete#sources#ternjs#timeout = 1
-let g:deoplete#sources#ternjs#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'ts',
-                \ 'tsx',
-                \ ]
-
-
-" Only use standardrb for liinting
+" Only use standardrb for linting
 let g:ale_linters = { 'ruby': ['standardrb'] }
 "
 " Autofix fixable errors
@@ -348,10 +381,34 @@ let g:ale_fixers = {
 \}
 let g:ale_fix_on_save = 1
 
-" Rust specific
+
+" """"""""""""""""""""""
+" TERN config
+""""""""""""""""""""""""
+let g:deoplete#sources#ternjs#timeout = 1
+let g:deoplete#sources#ternjs#filetypes = [
+                \ 'jsx',
+                \ 'javascript.jsx',
+                \ 'ts',
+                \ 'tsx',
+                \ ]
+
+
+
+" """"""""""""""""""""""""""""""""""
+" Rust
+" """"""""""""""""""""""""""""""""""
 " May be the same as ale_fix_on_save
 let g:autofmt_autosave = 1
+let g:rustfmt_autosave = 1
+let g:rust_clip_command = 'pbcopy'
+" Use racers experimental completer
+let g:racer_experimental_completer = 1
 
+
+" """"""""""""""""""""""""""""""
+" LanguageClient Server
+" """"""""""""""""""""""""""""""
 " a basic set up for LanguageClient-Neovim
 " << LSP >> {{{
 
