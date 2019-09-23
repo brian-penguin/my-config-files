@@ -9,11 +9,16 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
-" Async Linting engine
-Plug 'w0rp/ale'
+Plug 'elmcast/elm-vim'
 
 " Vim Language Pack
 Plug 'sheerun/vim-polyglot'
+" Disable the polygot version of elm
+let g:polyglot_disabled = ['elm', 'scala']
+
+" Async Linting engine
+Plug 'w0rp/ale'
+
 " Language server
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
@@ -70,6 +75,9 @@ Plug 'jlanzarotta/bufexplorer'
 " Autoindent lines please
 Plug 'Yggdroot/indentLine'
 
+"Emacs-esque org mode
+Plug 'jceb/vim-orgmode'
+
 " RUBY
 " Run Specs from Vim
 Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
@@ -87,11 +95,16 @@ Plug 'slashmili/alchemist.vim', { 'for': 'elixir' }
 Plug 'mhinz/vim-mix-format', { 'for': 'elixir' }
 
 " Scala
-Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins', 'for': 'scala' }
+Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+"Set config for sbt as well
+au BufRead,BufNewFile *.sbt set filetype=scala
 
 "Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+"
+" A markdown previewer -> :MarkdownPreview
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 
 "Colorschemes
 Plug 'rakr/vim-one'
@@ -169,6 +182,9 @@ noremap Q <nop>
 " https://vi.stackexchange.com/questions/201/make-panes-resize-when-host-window-is-resized
 autocmd VimResized * wincmd =
 
+" Use relative line numbers
+set relativenumber
+
 " Move by visual line(ie wraps not literal lines)
 nnoremap j gj
 nnoremap k gk
@@ -225,7 +241,12 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " italic comments! https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
-highlight Comment cterm=italic
+highlight Comment cterm=italic gui=italic
+
+augroup Markdown
+  autocmd!
+  autocmd FileType markdown set wrap
+augroup END
 
 """"""""""""""""""""""""
 "" DEOCOMPLETE (Neocomplete replacement)
@@ -287,8 +308,12 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 let g:mix_format_on_save = 1
 let g:mix_format_silent_errors = 1
 
+""""""""""""""""""""
+"ELM stuff
+""""""""""""""""""""""
+let g:elm_format_autosave = 1
 
-" """"""""""""""""
+" """"""""""""""""""""
 " BufExplorer
 " """"""""""""""""""""""""
 " Buffers - explore/next/previous: Alt-F12, F12, Shift-F12.
@@ -296,16 +321,20 @@ nnoremap <silent> <M-F12> :BufExplorer<CR>
 nnoremap <silent> <F12> :bn<CR>
 nnoremap <silent> <S-F12> :bp<CR>
 
+
+" """""""""""""
 " Easy Json Formating
+" """"""""""""""""
 " use :FormatJson()
 com FormatJson %!python -m json.tool
 
-" """""""""""j"""""""""""
+
+" """"""""""""""""""""""
 " The Silver Searcher
 " """"""""""""""""""""""""
 if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
+  " Use rg over grep
+  set grepprg=ag
 endif
 
 " bind K to grep word under cursor
@@ -314,7 +343,15 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " bind \ (backward slash) to grep shortcut
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " TODO: This isn't great, we should just use the defined args above
-nnoremap \ :Ag<SPACE>
+nnoremap \ :Rg<SPACE>
+
+
+"""""""""""""""""""""
+"    AutoPairs      "
+"""""""""""""""""""""
+let g:AutoPairsMultilineClose = 0
+let g:AutoPairsOnlyWhitespace = 1
+
 
 " """"""""""""""""""""""""""""""""
 " utilisnips directory
@@ -323,6 +360,7 @@ let g:UltiSnipsSnippetDirectories=['UltiSnips']
 let g:UltiSnipsExpandTrigger='<tab>'
 let g:UltisnipsJumpForwardTrigger='<tab>'
 let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
+
 
 " """"""""""""""""""""
 " RSPEC Config
@@ -336,6 +374,7 @@ map <Leader>s :call RunNearestSpec()<CR>
 map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
 let g:rspec_runner = "os_x_iterm2"
+
 
 " """"""""""""""""""""""""
 " fugitive git
@@ -378,6 +417,7 @@ let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'ruby': ['standardrb'],
 \   'javascript': ['eslint'],
+\   'elm': ['elm-format'],
 \}
 let g:ale_fix_on_save = 1
 
