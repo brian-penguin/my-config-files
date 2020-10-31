@@ -100,11 +100,7 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 au BufRead,BufNewFile *.sbt set filetype=scala
 
 "Clojure
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
-"
-" A markdown previewer -> :MarkdownPreview
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'Olical/conjure', { 'tag': 'v3.1.1' }
 
 "Colorschemes
 Plug 'rakr/vim-one'
@@ -115,22 +111,13 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
 
 
+" Writing Mode
+Plug 'junegunn/goyo.vim'
+call plug#end()
+
 " Set the SWP directory to be this tempfile directory
 " so autobuild stuff doesn't register the swp file
 set directory^=$HOME/.vim/tmp//
-
-""""""""""""""""""""""
-" Macvim
-" """"""""""""""""""""
-
-" hide mouse while typing
-set mousehide
-" gui font
-set guifont=Hack:h13
-"set guifont=InputMonoCondensed:h12
-" bye scrollbars
-set guioptions-=r
-set guioptions-=L
 
 """"""""""""""
 " Theme
@@ -163,6 +150,7 @@ let g:airline_powerline_fonts = 1
 " Defaults "
 """""""""""""""
 let mapleader = "\<Space>"
+let maplocalleader =","
 
 " Line Formatting for indented spaces
 let g:indentLine_enabled = 0
@@ -248,16 +236,17 @@ augroup Markdown
   autocmd FileType markdown set wrap
 augroup END
 
+"""""""""""""""""""
+" Goyo
+"""""""""""""""""""
+let g:goyo_width = 120
+
 """"""""""""""""""""""""
 "" DEOCOMPLETE (Neocomplete replacement)
 """"""""""""""""""""""""
 let g:deoplete#enable_at_startup = 1
 " deoplete tab-complete
 let g:SuperTabDefaultCompletionType = "<c-n>"
-" Setup for omnicompletion
-if !exists('g:deoplete#omni#input_patterns')
-    let g:deoplete#omni#input_patterns = {}
-  endif
 
 """"""""""""""""""""""""""""""""""
 "FZF config
@@ -409,8 +398,10 @@ let g:ale_sign_column_always = 1
 " Custome Ale status line config
 let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
 
-" Only use standardrb for linting
-let g:ale_linters = { 'ruby': ['standardrb'] }
+let g:ale_linters = {
+\  'ruby': ['standardrb'],
+\   'clojure': ['clj-kondo', 'joker'],
+\}
 "
 " Autofix fixable errors
 let g:ale_fixers = {
@@ -422,19 +413,6 @@ let g:ale_fixers = {
 let g:ale_fix_on_save = 1
 
 
-" """"""""""""""""""""""
-" TERN config
-""""""""""""""""""""""""
-let g:deoplete#sources#ternjs#timeout = 1
-let g:deoplete#sources#ternjs#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'ts',
-                \ 'tsx',
-                \ ]
-
-
-
 " """"""""""""""""""""""""""""""""""
 " Rust
 " """"""""""""""""""""""""""""""""""
@@ -444,26 +422,3 @@ let g:rustfmt_autosave = 1
 let g:rust_clip_command = 'pbcopy'
 " Use racers experimental completer
 let g:racer_experimental_completer = 1
-
-
-" """"""""""""""""""""""""""""""
-" LanguageClient Server
-" """"""""""""""""""""""""""""""
-" a basic set up for LanguageClient-Neovim
-" << LSP >> {{{
-
-let g:LanguageClient_autoStart = 0
-nnoremap <leader>lcs :LanguageClientStart<CR>
-
-" if you want it to turn on automatically
-" let g:LanguageClient_autoStart = 1
-
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio'] }
-
-noremap <silent> H :call LanguageClient_textDocument_hover()<CR>
-noremap <silent> Z :call LanguageClient_textDocument_definition()<CR>
-noremap <silent> R :call LanguageClient_textDocument_rename()<CR>
-noremap <silent> S :call LanugageClient_textDocument_documentSymbol()<CR>
-" }}}
