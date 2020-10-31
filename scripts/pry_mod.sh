@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh --login -i
+#!/usr/bin/env bash --login -i
 
 undo() {
   sed -i .bak "/  gem \'pry\'/d" Gemfile
