@@ -36,6 +36,9 @@ Add it to github.com
 -> github.com -> settings -> ssh and gpg keys -> new
 Done!
 
+### Configuring git
+Inside this repo is a default commit message template, config, and global ignore file. Copy these to the home directory
+
 ### Installing fish shell, fisher, and conf
 `sudo dnf install fish util-linux-user`
 figure out which fish  and add it to shells
@@ -102,7 +105,6 @@ pop open that nvim and run `:PlugInstall`
  And set it up as service so I don't have to worry about it
 `sudo systemctl enable docker.service`
 `sudo systemctl start docker.service`
-
 You can follow https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04 for the section on executing docker without sudo (which is good and what we want)
 
 ## Podman (podman is a replacement for the docker util)
@@ -111,9 +113,6 @@ Benefits are that it installs container in a safe user space (no more sudo), you
 and we're done. You can just use `podman` binary as a drop in replacement for any `docker` command
 
 ## Postgres
-I'm going to try working with a dockerized version of postgres not sure what this looks like yet but I think it's gonna be okay.
-- I did not end up getting that working
-
 Locally:
 `sudo dnf install postgresql-server postgresql-contrib pg_config`
 Try to run to make sure we get an error `sudo systemctl start postgres`
@@ -125,13 +124,20 @@ I think this is all the steps. At some point I may have created the linux user p
 
 
 ## PIA VPN
-This one is tricky cause I'm going to download a script off the internet
-`wget https://www.privateinternetaccess.com/installer/pia-nm.sh`
-`sudo pia-nm.sh`
-The first time you connect to any given server group with the VPN you'll be prompted for a password. After you should be fine reconnecting on demand (It should save the pass)
+SO they recently rebuilt all their tooling and it works really well now on fedora (or linux in general) and with my ISP throttling whenever they can its worthwhile having on all the time. See: https://www.privateinternetaccess.com/installer/x/download_installer_linux
+
+## Flathub
+I've been using flathub to install tools like intellij, spotify, slack, and dbeaver so I just don't have to manage and worry about them. Fedora comes with the base installed so you only need to follow some small directions
+See: https://flatpak.org/setup/
+NOTE: sometimes depending on the Desktop Environment the .Desktop files won't be accessible to the application launcher. You can copy those .Desktop entries over to where they will be launchable from the application / runner.
+In this one case my command was:
+```
+sudo cp /var/lib/flatpak/exports/share/applications/* /usr/share/applications/
+```
+
+
 
 ## Media Codex
-UGH.
 Fedora. It's all free all open source all the way. Which means proprietary stuff like media drivers and encoders are not included (I forgot about this). So Time to figure out how that works
 
 ### Step 1 -> Enable RPM Fusion
