@@ -128,7 +128,14 @@ SO they recently rebuilt all their tooling and it works really well now on fedor
 
 ## Flathub
 I've been using flathub to install tools like intellij, spotify, slack, and dbeaver so I just don't have to manage and worry about them. Fedora comes with the base installed so you only need to follow some small directions
-See: https://flatpak.org/setup/ 
+See: https://flatpak.org/setup/
+NOTE: sometimes depending on the Desktop Environment the .Desktop files won't be accessible to the application launcher. You can copy those .Desktop entries over to where they will be launchable from the application / runner.
+In this one case my command was:
+```
+sudo cp /var/lib/flatpak/exports/share/applications/* /usr/share/applications/
+```
+
+
 
 ## Media Codex
 Fedora. It's all free all open source all the way. Which means proprietary stuff like media drivers and encoders are not included (I forgot about this). So Time to figure out how that works
