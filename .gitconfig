@@ -1,0 +1,9 @@
+[user]
+	name = brimatteng
+	email = <FILL-ME-IN>
+[core]
+	excludesfile = ~/.gitignore
+[init]
+	defaultBranch = main
+[commit]
+	template = ~/.gitcommitmsg.txt

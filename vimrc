@@ -19,15 +19,7 @@ let g:polyglot_disabled = ['elm', 'scala']
 " Async Linting engine
 Plug 'w0rp/ale'
 
-" Language server
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-
 " (Optional) Multi-entry selection UI.
-" This will link the brew sym-linked fzf used in commandline
-Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 
 " Autocomplete
@@ -81,14 +73,6 @@ Plug 'jceb/vim-orgmode'
 " RUBY
 " Run Specs from Vim
 Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
-
-" RUST
-Plug 'sebastianmarkow/deoplete-rust', { 'for': 'rust' }
-Plug 'racer-rust/vim-racer', { 'for': 'rust' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-
-" JS
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'typescript'] }
 
 " Elixir
 Plug 'slashmili/alchemist.vim', { 'for': 'elixir' }
@@ -233,7 +217,16 @@ highlight Comment cterm=italic gui=italic
 
 augroup Markdown
   autocmd!
-  autocmd FileType markdown set wrap
+  autocmd FileType markdown setlocal wrap
+  autocmd FileType markdown setlocal spell
+  autocmd FileType markdown setlocal complete+=kspell
+augroup END
+
+augroup Gitcommit
+  autocmd!
+  autocmd FileType gitcommit setlocal wrap
+  autocmd FileType gitcommit setlocal spell
+  autocmd FileType gitcommit setlocal complete+=kspell
 augroup END
 
 """""""""""""""""""
@@ -322,7 +315,7 @@ com FormatJson %!python -m json.tool
 " The Silver Searcher
 " """"""""""""""""""""""""
 if executable('ag')
-  " Use rg over grep
+  " Use ag over grep
   set grepprg=ag
 endif
 
@@ -340,7 +333,6 @@ nnoremap \ :Rg<SPACE>
 """""""""""""""""""""
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsOnlyWhitespace = 1
-
 
 " """"""""""""""""""""""""""""""""
 " utilisnips directory
@@ -362,7 +354,6 @@ map <Leader>t :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
 map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
-let g:rspec_runner = "os_x_iterm2"
 
 
 " """"""""""""""""""""""""
@@ -411,14 +402,3 @@ let g:ale_fixers = {
 \   'elm': ['elm-format'],
 \}
 let g:ale_fix_on_save = 1
-
-
-" """"""""""""""""""""""""""""""""""
-" Rust
-" """"""""""""""""""""""""""""""""""
-" May be the same as ale_fix_on_save
-let g:autofmt_autosave = 1
-let g:rustfmt_autosave = 1
-let g:rust_clip_command = 'pbcopy'
-" Use racers experimental completer
-let g:racer_experimental_completer = 1
