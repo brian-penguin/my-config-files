@@ -67,9 +67,6 @@ Plug 'jlanzarotta/bufexplorer'
 " Autoindent lines please
 Plug 'Yggdroot/indentLine'
 
-"Emacs-esque org mode
-Plug 'jceb/vim-orgmode'
-
 " RUBY
 " Run Specs from Vim
 Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
@@ -312,19 +309,14 @@ com FormatJson %!python -m json.tool
 
 
 " """"""""""""""""""""""
-" The Silver Searcher
+" Ripgrep BurntSushi
 " """"""""""""""""""""""""
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag
-endif
+" Use rg for vimgrep
+set grepprg=rg\ --vimgrep
 
 " bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
+nnoremap K :Rg<SPACE><C-R><C-W><CR>
 " bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-" TODO: This isn't great, we should just use the defined args above
 nnoremap \ :Rg<SPACE>
 
 
