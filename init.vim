@@ -9,6 +9,9 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
+" Compile all the lua stuff and cache it!
+Plug 'lewis6991/impatient.nvim'
+
 " Vim Language Pack
 Plug 'sheerun/vim-polyglot'
 
@@ -47,9 +50,14 @@ Plug 'https://github.com/adelarsq/vim-matchit'
 " Use editorconfig file for formatting when available
 Plug 'editorconfig/editorconfig-vim'
 " Pretty baseline
-Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline'
 " Best commentor
 Plug 'preservim/nerdcommenter'
+
+" Open Current file in Github
+" https://github.com/tyru/open-browser-github.vim
+Plug 'tyru/open-browser.vim'
+Plug 'tyru/open-browser-github.vim'
 
 " line highlighting (Look into just doing this myself)
 Plug 'bronson/vim-crosshairs'
@@ -82,6 +90,8 @@ Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
 "Colorschemes
 Plug 'rakr/vim-one'
 Plug 'dracula/vim', { 'as': 'dracula' }
+"Plug 'agudulin/vim-colors-alabaster'
+Plug 'brimatteng/vim-colors-alabaster'
 " Plug 'morhetz/gruvbox'
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'reedes/vim-colors-pencil'
@@ -101,14 +111,16 @@ set directory^=$HOME/.vim/tmp//
 """"""""""""""
 " ONE ViM colors
 set background=light
-colo one
-let g:airline_theme = 'one'
+"colo one
+"let g:airline_theme = 'one'
+
+colo alabaster
 
 "set background=dark
 "colo dracula
 "let g:airline_theme = 'dracula'
 
-let g:airline_powerline_fonts = 1
+"let g:airline_powerline_fonts = 1
 
 """"""""""""""""
 " Defaults "
@@ -187,6 +199,11 @@ if !&sidescrolloff
   set sidescrolloff=5
 endif
 
+" Make it obvious where 80 characters is
+" Disabled Temporarily while figuring out colors
+"set textwidth=80
+"set colorcolumn=+1
+
 " Easier window split navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -194,6 +211,12 @@ nnoremap <C-L> <C-W><C-L>
 
 " italic comments! https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
 highlight Comment cterm=italic gui=italic
+"
+" bind K to grep word under cursor
+nnoremap K :Rg "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" bind \ (backward slash) to grep shortcut
+nnoremap \ :Rg<SPACE>
 
 fun! TrimWhitespace()
   let l:save = winsaveview()
@@ -218,6 +241,7 @@ augroup Markdown
   autocmd!
   autocmd FileType markdown setlocal wrap
   autocmd FileType markdown setlocal spell
+  autocmd FileType markdown setlocal textwidth=80
   autocmd FileType markdown setlocal complete+=kspell
 augroup END
 
@@ -225,6 +249,7 @@ augroup Gitcommit
   autocmd!
   autocmd FileType gitcommit setlocal wrap
   autocmd FileType gitcommit setlocal spell
+  autocmd FileType gitcommit setlocal textwidth=80
   autocmd FileType gitcommit setlocal complete+=kspell
 augroup END
 
@@ -286,6 +311,9 @@ nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
 " Config for telescope. Use a compiled version of fzy for fastness
 lua << EOF
+
+require('impatient')
+
 local actions = require('telescope.actions')
 require('telescope').setup{
   defaults = {
@@ -311,17 +339,18 @@ require('telescope').load_extension('fzy_native')
 
 -- For  nvim-lint
 require('lint').linters_by_ft = {
-  ruby = {'standardrb',}
+  ruby = {'standardrb'},
+  clojure = {'clj-kondo'}
 }
 
 -- For LSP with Ruby
-require'lspconfig'.solargraph.setup{
-  useBundler = true;
+-- require'lspconfig'.solargraph.setup{
+  -- useBundler = true;
   -- Testing a debounce to see if that make solargraph happier
-  flags = {
-    debounce_text_changes = 100
-  }
-}
+  -- flags = {
+    -- debounce_text_changes = 100
+  -- }
+-- }
 require'lspconfig'.tsserver.setup{}
 
 -- For Completion engine
@@ -365,7 +394,6 @@ EOF
 " super tab
 """"""""""""""""""""""""
 let g:SuperTabDefaultCompletionType = "<c-n>"
-
 
 " lsp config
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
