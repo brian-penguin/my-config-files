@@ -9,24 +9,32 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
-Plug 'elmcast/elm-vim'
+" Compile all the lua stuff and cache it!
+Plug 'lewis6991/impatient.nvim'
 
 " Vim Language Pack
 Plug 'sheerun/vim-polyglot'
-" Disable the polygot version of elm
-let g:polyglot_disabled = ['elm', 'scala']
 
-" Async Linting engine
-Plug 'w0rp/ale'
+" A Newer Multi-entry selection UI purpose built for nvim >0.5
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
-" (Optional) Multi-entry selection UI.
-Plug 'junegunn/fzf.vim'
+" A Neovim 0.5> linter
+Plug 'mfussenegger/nvim-lint'
 
-" Autocomplete
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+" A Neovim 0.5> LSP plugin
+Plug 'neovim/nvim-lspconfig'
 
-" Use tab for all insert completion
+" A Neovim 0.5>
+Plug 'hrsh7th/nvim-compe'
+
+" Supertab for tab complete
 Plug 'ervandew/supertab'
+
+" Use ripgrep for search
+Plug 'jremmen/vim-ripgrep'
 
 " Nice defaults to get started
 Plug 'tpope/vim-sensible'
@@ -36,12 +44,20 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Pair open quotes and brackets etc
 Plug 'jiangmiao/auto-pairs'
+" Extended % matching
+Plug 'https://github.com/adelarsq/vim-matchit'
+
 " Use editorconfig file for formatting when available
 Plug 'editorconfig/editorconfig-vim'
 " Pretty baseline
-Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline'
 " Best commentor
-Plug 'scrooloose/nerdcommenter'
+Plug 'preservim/nerdcommenter'
+
+" Open Current file in Github
+" https://github.com/tyru/open-browser-github.vim
+Plug 'tyru/open-browser.vim'
+Plug 'tyru/open-browser-github.vim'
 
 " line highlighting (Look into just doing this myself)
 Plug 'bronson/vim-crosshairs'
@@ -50,7 +66,7 @@ Plug 'ConradIrwin/vim-bracketed-paste'
 " StripWhitespace on save for specific file typpes
 Plug 'ntpeters/vim-better-whitespace'
 " Jumping around in a fun and fast way
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 " Send commands to shell in the background
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
@@ -67,28 +83,15 @@ Plug 'jlanzarotta/bufexplorer'
 " Autoindent lines please
 Plug 'Yggdroot/indentLine'
 
-"Emacs-esque org mode
-Plug 'jceb/vim-orgmode'
-
 " RUBY
 " Run Specs from Vim
 Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
 
-" Elixir
-Plug 'slashmili/alchemist.vim', { 'for': 'elixir' }
-Plug 'mhinz/vim-mix-format', { 'for': 'elixir' }
-
-" Scala
-Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
-"Set config for sbt as well
-au BufRead,BufNewFile *.sbt set filetype=scala
-
-"Clojure
-Plug 'Olical/conjure', { 'tag': 'v3.1.1' }
-
 "Colorschemes
 Plug 'rakr/vim-one'
 Plug 'dracula/vim', { 'as': 'dracula' }
+"Plug 'agudulin/vim-colors-alabaster'
+Plug 'brimatteng/vim-colors-alabaster'
 " Plug 'morhetz/gruvbox'
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'reedes/vim-colors-pencil'
@@ -106,29 +109,18 @@ set directory^=$HOME/.vim/tmp//
 """"""""""""""
 " Theme
 """"""""""""""
-
-"Gruvbox Theme settings
-"set background=dark
-"colo gruvbox
-"let g:gruvbox_contrast = 'hard'
-"let g:airline_theme = 'gruvbox'
-"
-"Nord Theme settings
-"set background=dark
-"colo nord
-"let g:airline_theme = 'nord'
-
 " ONE ViM colors
 set background=light
-colo one
-let g:airline_theme = 'one'
+"colo one
+"let g:airline_theme = 'one'
+
+colo alabaster
 
 "set background=dark
 "colo dracula
 "let g:airline_theme = 'dracula'
 
-let g:airline_powerline_fonts = 1
-
+"let g:airline_powerline_fonts = 1
 
 """"""""""""""""
 " Defaults "
@@ -165,9 +157,9 @@ nnoremap k gk
 vnoremap // y/<C-R>"<CR>"
 
 " For when experiencing slow vim syntax highlighting with large ruby files
-set re=1
-set ttyfast
-set lazyredraw
+"set re=1
+"set ttyfast
+"set lazyredraw
 
 " Set the title bar
 set title
@@ -207,6 +199,11 @@ if !&sidescrolloff
   set sidescrolloff=5
 endif
 
+" Make it obvious where 80 characters is
+" Disabled Temporarily while figuring out colors
+"set textwidth=80
+"set colorcolumn=+1
+
 " Easier window split navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -214,11 +211,37 @@ nnoremap <C-L> <C-W><C-L>
 
 " italic comments! https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
 highlight Comment cterm=italic gui=italic
+"
+" bind K to grep word under cursor
+nnoremap K :Rg "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" bind \ (backward slash) to grep shortcut
+nnoremap \ :Rg<SPACE>
+
+fun! TrimWhitespace()
+  let l:save = winsaveview()
+ keeppatterns %s/\s\+$//e
+  call winrestview(l:save)
+endfun
+
+fun! JumpToLastLine()
+  if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+    exe "normal g`\"" |
+  endif
+endfun
+
+augroup vimrcEx
+  autocmd!
+  autocmd BufWritePre * :call TrimWhitespace()
+  autocmd BufReadPost * :call JumpToLastLine()
+  autocmd BufWritePost *.rb lua require('lint').try_lint()
+augroup END
 
 augroup Markdown
   autocmd!
   autocmd FileType markdown setlocal wrap
   autocmd FileType markdown setlocal spell
+  autocmd FileType markdown setlocal textwidth=80
   autocmd FileType markdown setlocal complete+=kspell
 augroup END
 
@@ -226,6 +249,7 @@ augroup Gitcommit
   autocmd!
   autocmd FileType gitcommit setlocal wrap
   autocmd FileType gitcommit setlocal spell
+  autocmd FileType gitcommit setlocal textwidth=80
   autocmd FileType gitcommit setlocal complete+=kspell
 augroup END
 
@@ -234,113 +258,12 @@ augroup END
 """""""""""""""""""
 let g:goyo_width = 120
 
-""""""""""""""""""""""""
-"" DEOCOMPLETE (Neocomplete replacement)
-""""""""""""""""""""""""
-let g:deoplete#enable_at_startup = 1
-" deoplete tab-complete
-let g:SuperTabDefaultCompletionType = "<c-n>"
-
-""""""""""""""""""""""""""""""""""
-"FZF config
-" """"""""""""""""""""""""""""""""""""
-" Customize fzf colors to match your color scheme
-" Use Ctrl-p for fzf now
-nnoremap <silent> <C-p> :FZF<CR>
-
-" Match colors env
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
-" Plugin key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-"
-" make fzf status line use the vim theme colors
-function! s:fzf_statusline()
-  highlight fzf1 ctermfg=161 ctermbg=251
-  highlight fzf2 ctermfg=23 ctermbg=251
-  highlight fzf3 ctermfg=237 ctermbg=251
-  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
-endfunction
-
-autocmd! User FzfStatusLine call <SID>fzf_statusline()
-
-
-""""""""""""""""""""
-"Elixir stuff
-""""""""""""""""""""""
-let g:mix_format_on_save = 1
-let g:mix_format_silent_errors = 1
-
-""""""""""""""""""""
-"ELM stuff
-""""""""""""""""""""""
-let g:elm_format_autosave = 1
-
-" """"""""""""""""""""
-" BufExplorer
-" """"""""""""""""""""""""
-" Buffers - explore/next/previous: Alt-F12, F12, Shift-F12.
-nnoremap <silent> <M-F12> :BufExplorer<CR>
-nnoremap <silent> <F12> :bn<CR>
-nnoremap <silent> <S-F12> :bp<CR>
-
-
-" """""""""""""
-" Easy Json Formating
-" """"""""""""""""
-" use :FormatJson()
-com FormatJson %!python -m json.tool
-
-
-" """"""""""""""""""""""
-" The Silver Searcher
-" """"""""""""""""""""""""
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag
-endif
-
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
-" bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-" TODO: This isn't great, we should just use the defined args above
-nnoremap \ :Rg<SPACE>
-
 
 """""""""""""""""""""
 "    AutoPairs      "
 """""""""""""""""""""
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsOnlyWhitespace = 1
-
-" """"""""""""""""""""""""""""""""
-" utilisnips directory
-""""""""""""""""""""""""""""""""""""
-let g:UltiSnipsSnippetDirectories=['UltiSnips']
-let g:UltiSnipsExpandTrigger='<tab>'
-let g:UltisnipsJumpForwardTrigger='<tab>'
-let g:UltisnipsJumpBackwardsTrigger = '<s-tab>'
 
 
 " """"""""""""""""""""
@@ -375,30 +298,107 @@ nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gps :Dispatch! git push<CR>
 nnoremap <Leader>gpl :Dispatch! git pull<CR>
 
-
-" """"""""""""""""""""""""""""
-" ALE
-" """"""""""""""""""""""""""""""
-" enable extensions for airline
-let g:airline#extensions#ale#enabled = 1
-" Uncomment when you only lint on file save(for big files)
-" let g:ale_lint_on_text_changed = 'never'
-
-" Keep the gutter always open for linting
-let g:ale_sign_column_always = 1
-" Custome Ale status line config
-let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
-
-let g:ale_linters = {
-\  'ruby': ['standardrb'],
-\   'clojure': ['clj-kondo', 'joker'],
-\}
 "
-" Autofix fixable errors
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'ruby': ['standardrb'],
-\   'javascript': ['eslint'],
-\   'elm': ['elm-format'],
-\}
-let g:ale_fix_on_save = 1
+" """"""""""""""""""""""""
+" telescope nvim
+" https://github.com/nvim-telescope/telescope.nvim
+""""""""""""""""""""""""
+" Using Lua functions
+nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+
+" Config for telescope. Use a compiled version of fzy for fastness
+lua << EOF
+
+require('impatient')
+
+local actions = require('telescope.actions')
+require('telescope').setup{
+  defaults = {
+    prompt_prefix = " > ",
+    file_sorter =  require'telescope.sorters'.get_fzy_sorter,
+    color_devicons = true,
+    mappings = {
+      i = {
+        ["<C-x>"] = false,
+        ["<C-q>"] = actions.send_to_qflist,
+        },
+      },
+    extensions = {
+      fzy_native = {
+        override_generic_sorter = false,
+        override_file_sorter = true,
+        }
+      }
+  }
+}
+-- Use native fzy instead
+require('telescope').load_extension('fzy_native')
+
+-- For  nvim-lint
+require('lint').linters_by_ft = {
+  ruby = {'standardrb'},
+  clojure = {'clj-kondo'}
+}
+
+-- For LSP with Ruby
+-- require'lspconfig'.solargraph.setup{
+  -- useBundler = true;
+  -- Testing a debounce to see if that make solargraph happier
+  -- flags = {
+    -- debounce_text_changes = 100
+  -- }
+-- }
+require'lspconfig'.tsserver.setup{}
+
+-- For Completion engine
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'disable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = true;
+
+  source = {
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    vsnip = false;
+    ultisnips = false;
+  };
+}
+
+EOF
+
+" """"""""""""""""""""""""
+" nvim-lint
+" https://github.com/lispyclouds/nvim-lint
+""""""""""""""""""""""""
+" I have this running in a buffer hook only for ruby files currently
+"au BufWritePost <buffer> lua require('lint').try_lint()
+
+
+" """"""""""""""""""""""""
+" super tab
+""""""""""""""""""""""""
+let g:SuperTabDefaultCompletionType = "<c-n>"
+
+" lsp config
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+nnoremap <leader>fd :lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>fi :lua vim.lsp.buf.implementation()<CR>
+nnoremap <leader>fr :lua vim.lsp.buf.references()<CR>
+nnoremap <leader>fsh :lua vim.lsp.buf.signature_help()<CR>
+nnoremap <leader>fh :lua vim.lsp.buf.hover()<CR>
