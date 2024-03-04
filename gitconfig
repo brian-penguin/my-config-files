@@ -1,0 +1,37 @@
+[user]
+	name = brian-penguin
+	email = btenggren@onemedical.com
+[core]
+	excludesfile = ~/.gitignore
+    pager = delta
+
+[init]
+    defaultBranch = main
+
+; using my template saves time!
+; Verbose shows diffs in commits (fish does this automatically but is eq to git add -vv
+[commit]
+    template = ~/.gitcommitmsg.txt
+
+[pull]
+    rebase = true
+;
+; show the original change incase there are multiple changes to the original commit
+[merge]
+    conflictstyle = zdiff3
+;
+; Don't re rebase multiple changes in a single rebase
+; https://git-scm.com/book/en/v2/Git-Tools-Rerere
+[rerere]
+    enabled = true
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = true      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+    line-numbers = true
+
+[diff]
+    colorMoved = default
