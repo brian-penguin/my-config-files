@@ -32,7 +32,6 @@ alias fishreload="source ~/.config/fish/config.fish"
 
 alias bat="bat --theme OneHalfLight"
 alias ls="exa"
-alias daily="/Users/briantenggren/projects/notion-templating/create_daily_notion.clj"
 
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
@@ -40,4 +39,23 @@ alias be="bundle exec"
 alias bird="bundle install; bundle exec rake db:migrate; bundle exec rake db:test:prepare"
 alias br="bin/rspec"
 
-source /opt/homebrew/opt/asdf/asdf.fish
+# --------------------------------------------------------------------
+# ASDF configuration code
+if test -z $ASDF_DATA_DIR
+    set _asdf_shims "$HOME/.asdf/shims"
+else
+    set _asdf_shims "$ASDF_DATA_DIR/shims"
+end
+
+# Do not use fish_add_path (added in Fish 3.2) because it
+# potentially changes the order of items in PATH
+if not contains $_asdf_shims $PATH
+    set -gx --prepend PATH $_asdf_shims
+end
+set --erase _asdf_shims
+# --------------------------------------------------------------------
+
+# https://github.com/ajeetdsouza/zoxide
+zoxide init fish | source
+# https://starship.rs/
+starship init fish | source
