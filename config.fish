@@ -1,4 +1,4 @@
-# Brian's Fish config circa 2019
+# Brian's Fish config circa 2023
 #
 
 # Don't say anything!
@@ -17,8 +17,10 @@ set -x EDITOR 'nvim -f'
 # --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)set FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 set -x FZF_DEFAULT_COMMAND 'rg --files'
 
-# Use ASDF as the standard package manager for ruby, elixir, and node
-# source ~/.asdf/asdf.fish
+# Use cargo installed from rust!
+# using bass installed with `fisher add edc/bass`
+# see: https://superuser.com/questions/826333/is-there-a-way-to-source-a-sh-script-from-the-fish-shell
+bass source "$HOME/.cargo/env"
 
 # Setting some personal Alias's
 alias c="clear"
@@ -32,12 +34,17 @@ alias fishreload="source ~/.config/fish/config.fish"
 
 alias bat="bat --theme OneHalfLight"
 alias ls="exa"
+alias ctags="uctags"
+alias open="xdg-open"
 alias daily="/Users/briantenggren/projects/notion-templating/create_daily_notion.clj"
 
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
 alias be="bundle exec"
 alias bird="bundle install; bundle exec rake db:migrate; bundle exec rake db:test:prepare"
-alias br="bin/rspec"
+alias br="bundle exec rspec"
+alias brails="bundle exec rails"
+alias rspec="bundle exec rspec"
+alias rake="bundle exec rake"
 
-source /opt/homebrew/opt/asdf/asdf.fish
+/usr/bin/mise activate fish | source
