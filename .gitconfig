@@ -1,9 +1,22 @@
 [user]
 	name = brimatteng
-	email = <FILL-ME-IN>
+	email = btenggren20@gmail.com
 [core]
 	excludesfile = ~/.gitignore
 [init]
 	defaultBranch = main
 [commit]
 	template = ~/.gitcommitmsg.txt
+
+[includeIf "gitdir:/home/thoughtbot-brian/clients/albacore"]
+[user]
+	xemail="tenggren+albacore@thoughbot.com"
+	signingkey = e3b570F125c054ce
+[core]
+	xsshCommand = "ssh -i ~/.ssh/id_ed25519_albacore"
+
+
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true

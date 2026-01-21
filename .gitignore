@@ -1,4 +1,13 @@
-scratch/
-.idea
-.bsp
+*.rdb
 .DS_Store
+.bsp
+.env
+.idea
+TAGS
+bundle/
+coverage/
+scratch/
+tags
+.zed/
+.claude/
+.ai-notes/

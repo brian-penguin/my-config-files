@@ -39,10 +39,12 @@ alias open="xdg-open"
 alias daily="/Users/briantenggren/projects/notion-templating/create_daily_notion.clj"
 
 alias gh="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
+alias gu="git reset HEAD~"
 
 alias be="bundle exec"
 alias bird="bundle install; bundle exec rake db:migrate; bundle exec rake db:test:prepare"
-alias br="bundle exec rspec"
+alias br="bundle exec rails"
+alias bt="bundle exec rspec"
 alias brails="bundle exec rails"
 alias rspec="bundle exec rspec"
 alias rake="bundle exec rake"
